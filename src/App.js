@@ -22,7 +22,26 @@ export default function App() {
   }, [])
 
   async function handleLikeRepository(id) {
-    // Implement "Like Repository" functionality
+    //add a like to the repository
+    let response = await api.post(`repositories/${id}/like`, {
+      like: 1
+    });
+
+    //get the updated repository
+    let repository = response.data;
+
+    //get the index of the repository in the collection
+    let repositoryIndex = repositories.findIndex(
+      repository => repository.id === id
+    );
+    
+    //copy the repositories
+    let repositoriesUpdated = repositories;
+    
+    //update the repository that received the like
+    repositoriesUpdated[repositoryIndex] = repository;
+    
+    setRepositories([...repositoriesUpdated]);
   }
 
   return (
@@ -49,9 +68,13 @@ export default function App() {
                   <View style={styles.likesContainer}>
                     <Text
                       style={styles.likeText}
-                      testID={`repository-likes-${repository.likes}`}
+                      testID={`repository-likes-${repository.id}`}
                     >
-                      {`${repository.likes} curtidas`}
+                    {
+                      ( repository.likes === 1 ) 
+                        ? `${repository.likes} curtida`
+                        : `${repository.likes} curtidas`
+                    }
                     </Text>
                   </View>
 
